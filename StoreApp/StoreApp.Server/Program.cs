@@ -23,10 +23,18 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContextFactory<StoreAppContext>(optionsBuilder =>
 {
     var connectionString = builder.Configuration.GetConnectionString(nameof(StoreApp));
-    optionsBuilder.UseMySQL(connectionString);
+    optionsBuilder.UseMySQL(connectionString, options =>
+        options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
 });
 
 var app = builder.Build();
+
+// Apply migrations at runtime
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<StoreAppContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
