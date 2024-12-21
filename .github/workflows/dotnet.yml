@@ -1,0 +1,44 @@
+name: build and test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: List directories for debugging
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Listing all files recursively:"
+        ls -R
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x 
+
+    - name: Restore dependencies
+      run: |
+        dotnet restore project/StoreApp/StoreApp.Model/StoreApp.Model.csproj
+        dotnet restore project/StoreApp/StoreApp.test/StoreApp.test.csproj
+
+    - name: Build
+      run: |
+        dotnet build project/StoreApp/StoreApp.Model/StoreApp.Model.csproj
+        dotnet build project/StoreApp/StoreApp.test/StoreApp.test.csproj --no-restore
+
+    - name: Test
+      run: dotnet test project/StoreApp/StoreApp.test/StoreApp.test.csproj --no-build --verbosity normal
+
+
+
+
