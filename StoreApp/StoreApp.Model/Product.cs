@@ -69,7 +69,6 @@ public class Product
         ProductWeight = productWeight;
         ProductType = productType;
         ProductPrice = productPrice;
-        DateStorage = DateTime.Parse(dateStorage);
         ProductSales = new List<ProductSale>();
         ProductStores = new List<ProductStore>();
 

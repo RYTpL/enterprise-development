@@ -1,4 +1,5 @@
 using StoreApp.Model;
+using System.Globalization;
 using static System.Formats.Asn1.AsnWriter;
 namespace StoreApp.Tests;
 
@@ -106,7 +107,8 @@ public class StoreTest
         Assert.Equal(0.940, molochko.ProductWeight);
         Assert.False(molochko.ProductType);
         Assert.Equal(89.0, molochko.ProductPrice);
-        Assert.Equal(DateTime.Parse("2023.02.02"), molochko.DateStorage);
+        Assert.Equal(DateTime.ParseExact("2023.02.20", "yyyy.MM.dd", CultureInfo.InvariantCulture), molochko.DateStorage);
+
     }
 
     /// <summary>
