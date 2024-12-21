@@ -16,6 +16,11 @@ public class StoreTest
         return new List<Product>()
         {
             new Product(0, 1, "Milk", 0.940, false, 89.0, "2023.01.01"),
+            new Product(0, 1, "Milk", 0.940, false, 89.0, "2023.02.23"),
+            new Product(1, 1, "Butter", 0.940, false, 159.0, "2023.05.21"),
+            new Product(2, 2, "Pasta", 0.400, true, 109.0, "2023.01.10"),
+            new Product(3, 3, "Eggs", 0.600, false, 96.0, "2023.05.09"),
+            new Product(4, 3, "Bread", 0.440, false, 36.0, "2023.02.23")
 
         };
     }
