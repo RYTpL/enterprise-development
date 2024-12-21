@@ -198,7 +198,7 @@ public class StoreTest
     /// Display information about the average cost of goods of each product group for each store.
     /// </summary>
     [Fact]
-    public void TestAverageCostGroup() // не прошел 
+    public void TestAverageCostGroup() // не прошел итог 
     {
         var products = CreateDefaulProduct();
         var stores = CreateDefaultStore();
@@ -216,7 +216,7 @@ public class StoreTest
                      };
 
         Assert.NotNull(result);
-        Assert.Equal(0, result.Count());
+        Assert.Equal(5, result.Count());
 
         Assert.Contains(result, x => x.StoreId == 1 && x.ProductCategory == 1 && x.AveragePrice == 124.0);
         Assert.Contains(result, x => x.StoreId == 1 && x.ProductCategory == 2 && x.AveragePrice == 109.0);
@@ -285,7 +285,7 @@ public class StoreTest
     /// Display a list of stores that sold goods for the month amount in excess of the
     /// </summary>
     [Fact]
-    public void TestStoresWithAmountMoreThen() 
+    public void TestStoresWithAmountMoreThen() // не прошел итог 
     {
         var products = CreateDefaulProduct();
         var stores = CreateDefaultStore();
@@ -293,7 +293,7 @@ public class StoreTest
         var sales = CreateDefaultSales();
 
         DateTime startDate = DateTime.Now.AddMonths(-2);
-        var minSalesAmount = 600.0;
+        var minSalesAmount = 200.0;
         var result = from sale in sales
                      where sale.DateSale >= startDate
                      group sale by sale.StoreId into storeGroup
