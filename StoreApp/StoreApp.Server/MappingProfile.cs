@@ -3,6 +3,7 @@ using StoreApp.Model;
 using StoreApp.Server.Dto;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+
 namespace StoreApp.Server;
 
 public class MappingProfile : Profile
