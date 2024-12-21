@@ -55,15 +55,7 @@ public class Sale
         Sum = sum;
     }
 
-    public Sale(int saleId, string dateSale, int customerId, int storeId, List<int> productIds, double sum)
-    {
-        SaleId = saleId;
-        DateSale = DateTime.Parse(dateSale);
-        CustomerId = customerId;
-        StoreId = storeId;
-        ProductSales = productIds.Select(productId => new ProductSale { ProductId = productId, SaleId = saleId }).ToList();
-        Sum = sum;
-    }
+    
 }
 
 
