@@ -69,11 +69,9 @@ public class Product
         ProductWeight = productWeight;
         ProductType = productType;
         ProductPrice = productPrice;
+        DateStorage = DateTime.ParseExact(dateStorage, "yyyy.MM.dd", CultureInfo.InvariantCulture);
         ProductSales = new List<ProductSale>();
         ProductStores = new List<ProductStore>();
-
-        DateTime date = DateTime.ParseExact(dateStorage, "dd.MM.yyyy", CultureInfo.InvariantCulture);
-        DateStorage = date;
     }
 
 
