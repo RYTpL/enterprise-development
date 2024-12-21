@@ -28,13 +28,13 @@ jobs:
 
     - name: Restore dependencies
       run: |
-        dotnet restore project/StoreApp/StoreApp.Model/StoreApp.Model.csproj
-        dotnet restore project/StoreApp/StoreApp.test/StoreApp.test.csproj
+        dotnet restore StoreApp/StoreApp.Model/StoreApp.Model.csproj
+        dotnet restore StoreApp/StoreApp.test/StoreApp.test.csproj
 
     - name: Build
       run: |
-        dotnet build project/StoreApp/StoreApp.Model/StoreApp.Model.csproj
-        dotnet build project/StoreApp/StoreApp.test/StoreApp.test.csproj --no-restore
+        dotnet build StoreApp/StoreApp.Model/StoreApp.Model.csproj
+        dotnet build StoreApp/StoreApp.test/StoreApp.test.csproj --no-restore
 
     - name: Test
       run: dotnet test project/StoreApp/StoreApp.test/StoreApp.test.csproj --no-build --verbosity normal
