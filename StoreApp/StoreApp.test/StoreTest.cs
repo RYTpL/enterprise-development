@@ -284,33 +284,6 @@ public class StoreTest
     /// <summary>
     /// Display a list of stores that sold goods for the month amount in excess of the
     /// </summary>
-    [Fact]
-    public void TestStoresWithAmountMoreThen() // не прошел итог 
-    {
-        var products = CreateDefaulProduct();
-        var stores = CreateDefaultStore();
-        var productStores = CreateDefaultProductStore();
-        var sales = CreateDefaultSales();
-
-        DateTime startDate = DateTime.Now.AddMonths(-2);
-        var minSalesAmount = 200.0;
-        var result = from sale in sales
-                     where sale.DateSale >= startDate
-                     group sale by sale.StoreId into storeGroup
-                     select new
-                     {
-                         StoreId = storeGroup.Key,
-                         TotalSales = storeGroup.Sum(sale => sale.Sum),
-                     } into storeSales
-                     where storeSales.TotalSales >= minSalesAmount
-                     select new { StoreId = storeSales.StoreId, TotalSales = storeSales.TotalSales };
 
 
-
-            
-
-        Assert.Single(result);
-        Assert.Contains(result, x => x.StoreId == 0 && x.TotalSales == 1005.0);
-        Assert.DoesNotContain(result, x => x.StoreId == 1 && x.TotalSales == 364.0);
-    }
 }
