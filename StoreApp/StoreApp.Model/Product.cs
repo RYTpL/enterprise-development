@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 namespace StoreApp.Model;
 
 /// <summary>
@@ -71,6 +72,11 @@ public class Product
         DateStorage = DateTime.Parse(dateStorage);
         ProductSales = new List<ProductSale>();
         ProductStores = new List<ProductStore>();
+
+        DateTime date = DateTime.ParseExact(dateStorage, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+        DateStorage = date;
     }
+
+
 }
 
