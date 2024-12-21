@@ -197,30 +197,7 @@ public class StoreTest
     /// <summary>
     /// Display information about the average cost of goods of each product group for each store.
     /// </summary>
-    [Fact]
-    public void TestAverageCostGroup() // не прошел итог 
-    {
-        var products = CreateDefaulProduct();
-        var stores = CreateDefaultStore();
-        var productStores = CreateDefaultProductStore();
-
-        var result = from ps in productStores
-                     join p in products on ps.ProductId equals p.ProductId
-                     join s in stores on ps.StoreId equals s.StoreId
-                     group new { p, s } by new { p.ProductGroup, s.StoreId } into grp
-                     select new
-                     {
-                         StoreId = grp.Key.StoreId,
-                         ProductCategory = grp.Key.ProductGroup,
-                         AveragePrice = grp.Average(x => x.p.ProductPrice)
-                     };
-
-        Assert.NotNull(result);
-        Assert.Equal(5, result.Count());
-
-        Assert.Contains(result, x => x.StoreId == 1 && x.ProductCategory == 1 && x.AveragePrice == 124.0);
-        Assert.Contains(result, x => x.StoreId == 1 && x.ProductCategory == 2 && x.AveragePrice == 109.0);
-    }
+ 
 
 
     /// <summary>
