@@ -36,7 +36,6 @@ jobs:
         dotnet build StoreApp/StoreApp.Model/StoreApp.Model.csproj
         dotnet build StoreApp/StoreApp.test/StoreApp.test.csproj --no-restore
 
-
     - name: Test
       run: dotnet test StoreApp/StoreApp.test/StoreApp.test.csproj --no-build --verbosity normal
 
