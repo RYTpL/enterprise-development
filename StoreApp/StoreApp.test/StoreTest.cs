@@ -94,7 +94,12 @@ public class StoreTest
         var saleList = new List<Sale>
         {
             new Sale(1, "2023.03.03", 1, 0, new List<int> {0, 1, 2}, 357.0),
-
+            new Sale(2, "2023.01.20", 0, 1, new List<int> {3, 4, 0}, 221.0),
+            new Sale(3, "2023.02.15", 1, 0, new List<int> {1, 2, 3}, 364.0),
+            new Sale(4, "2023.02.18", 2, 2, new List<int> {4, 0, 1}, 284.0),
+            new Sale(5, "2023.02.16", 3, 3, new List<int> {2, 3, 4}, 241.0),
+            new Sale(6, "2023.03.28", 4, 1, new List<int> {1, 2, 3}, 364.0),
+            new Sale(7, "2023.03.01", 4, 0, new List<int> {4, 0, 3}, 284.0),
         };
         return saleList;
     }
@@ -302,7 +307,7 @@ public class StoreTest
 
 
 
-
+            
 
         Assert.Single(result);
         Assert.Contains(result, x => x.StoreId == 0 && x.TotalSales == 1005.0);
