@@ -1,0 +1,274 @@
+﻿@page "/queries"
+@using MudBlazor
+
+@inject ServerApi Api
+
+<h2>Analytics Queries</h2>
+
+<MudExpansionPanels MultiExpansion="true">
+
+    <!-- Query 1: Display products in a specified store -->
+
+    <MudExpansionPanel Text="Query 1: Display products in a specified store">
+        <div class="input-container">
+            <div class="mb-3">
+                <MudTextField id="storeId" Label="Store ID" @bind-Value="_storeId" />
+            </div>
+        </div>
+
+        <div class="button-container">
+            <MudButton Color="MudBlazor.Color.Primary" OnClick="@(() => ClickHandler(1))">Get result</MudButton>
+            <MudButton Color="MudBlazor.Color.Error" OnClick="@(() => ClearTask(1))">Clear</MudButton>
+        </div>
+
+        <div class="table-container">
+            @if (productsInStore != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Product Name</th>
+                            <th>Product Price</th>
+                            <th>Product Group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in productsInStore)
+                        {
+                            <tr>
+                                <td>@product.ProductId</td>
+                                <td>@product.ProductName</td>
+                                <td>@product.ProductPrice</td>
+                                <td>@product.ProductGroup</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="no-data">No data available.</p>
+            }
+        </div>
+    </MudExpansionPanel>
+
+    <!-- Query 2: Display stores with a specific product -->
+
+    <MudExpansionPanel Text="Query 2: Display stores with a specific product">
+        <div class="input-container">
+            <div class="mb-3">
+                <MudTextField id="productId" Label="Product ID" @bind-Value="_productId" />
+            </div>
+        </div>
+
+        <div class="button-container">
+            <MudButton Color="MudBlazor.Color.Primary" OnClick="@(() => ClickHandler(2))">Get result</MudButton>
+            <MudButton Color="MudBlazor.Color.Error" OnClick="@(() => ClearTask(2))">Clear</MudButton>
+        </div>
+
+        <div class="table-container">
+            @if (storesWithProduct != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Store Name</th>
+                            <th>Store Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var store in storesWithProduct)
+                        {
+                            <tr>
+                                <td>@store.StoreName</td>
+                                <td>@store.StoreAddress</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="no-data">No data available.</p>
+            }
+        </div>
+    </MudExpansionPanel>
+
+    <!-- Query 3: Display average price of goods by product group in each store -->
+
+    <MudExpansionPanel Text="Query 3: Display average price of goods by product group in each store">
+        <div class="button-container">
+            <MudButton Color="MudBlazor.Color.Primary" OnClick="@(() => ClickHandler(3))">Get result</MudButton>
+            <MudButton Color="MudBlazor.Color.Error" OnClick="@(() => ClearTask(3))">Clear</MudButton>
+        </div>
+
+        <div class="table-container">
+            @if (avgPriceByGroup != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Store ID</th>
+                            <th>Product Category</th>
+                            <th>Average Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var entry in avgPriceByGroup)
+                        {
+                            <tr>
+                                <td>@entry.StoreId</td>
+                                <td>@entry.ProductCategory</td>
+                                <td>@entry.AveragePrice</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="no-data">No data available.</p>
+            }
+        </div>
+    </MudExpansionPanel>
+
+    <!-- Query 4: Display the top 5 sales by total sale amount -->
+
+    <MudExpansionPanel Text="Query 4: Display top 5 sales by total sale amount">
+        <div class="button-container">
+            <MudButton Color="MudBlazor.Color.Primary" OnClick="@(() => ClickHandler(4))">Get result</MudButton>
+            <MudButton Color="MudBlazor.Color.Error" OnClick="@(() => ClearTask(4))">Clear</MudButton>
+        </div>
+
+        <div class="table-container">
+            @if (topSales != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sale ID</th>
+                            <th>Customer ID</th>
+                            <th>Store ID</th>
+                            <th>Sale Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sale in topSales)
+                        {
+                            <tr>
+                                <td>@sale.SaleId</td>
+                                <td>@sale.CustomerId</td>
+                                <td>@sale.StoreId</td>
+                                <td>@sale.Sum</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="no-data">No data available.</p>
+            }
+        </div>
+    </MudExpansionPanel>
+
+    <!-- Query 5: Display expired products -->
+
+    <MudExpansionPanel Text="Query 5: Display expired products">
+        <div class="button-container">
+            <MudButton Color="MudBlazor.Color.Primary" OnClick="@(() => ClickHandler(5))">Get result</MudButton>
+            <MudButton Color="MudBlazor.Color.Error" OnClick="@(() => ClearTask(5))">Clear</MudButton>
+        </div>
+
+        <div class="table-container">
+            @if (expiredProducts != null)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Store Name</th>
+                            <th>Product Name</th>
+                            <th>Product Price</th>
+                            <th>Date Storage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in expiredProducts)
+                        {
+                            <tr>
+                                <td>@product.StoreName</td>
+                                <td>@product.ProductName</td>
+                                <td>@product.ProductPrice</td>
+                                <td>@product.DateStorage.ToShortDateString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="no-data">No data available.</p>
+            }
+        </div>
+    </MudExpansionPanel>
+
+</MudExpansionPanels>
+
+@code {
+
+    private List<ProductGetDto> productsInStore = null!;
+    private List<StoreGetDto> storesWithProduct = null!;
+    private List<object> avgPriceByGroup = null!;
+    private List<SaleGetDto> topSales = null!;
+    private List<object> expiredProducts = null!;
+
+    private int _storeId;
+    private int _productId;
+
+    private async Task ClickHandler(int taskId)
+    {
+        try
+        {
+            switch (taskId)
+            {
+                case 1:
+                    var response1 = (await Api.ProductsInSpecifiedStoreAsync(_storeId)).ToList();
+                    if (response1 != null) productsInStore = response1;
+                    break;
+                case 2:
+                    var response2 = (await Api.StoresWithProductAsync(_productId)).ToList();
+                    if (response2 != null) storesWithProduct = response2;
+                    break;
+                case 3:
+                    var response3 = (await Api.InfomationAboutAvgPriceAsync()).ToList();
+                    if (response3 != null) avgPriceByGroup = response3;
+                    break;
+                case 4:
+                    var response4 = (await Api.TopSalesAsync()).ToList();
+                    if (response4 != null) topSales = response4;
+                    break;
+                case 5:
+                    var response5 = (await Api.ExpiredProductsAsync()).ToList();
+                    if (response5 != null) expiredProducts = response5;
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading data for Query {taskId}: {ex.Message}");
+        }
+    }
+
+    private void ClearTask(int taskId)
+    {
+        switch (taskId)
+        {
+            case 1: productsInStore = null!; break;
+            case 2: storesWithProduct = null!; break;
+            case 3: avgPriceByGroup = null!; break;
+            case 4: topSales = null!; break;
+            case 5: expiredProducts = null!; break;
+        }
+    }
+}

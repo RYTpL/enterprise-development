@@ -1,0 +1,191 @@
+﻿@page "/customers"
+@using StoreApp.StoreApp.Server.Dto
+@inject HttpClient Http
+@inject ServerApi Api
+
+<PageTitle>Customer Management</PageTitle>
+
+<h1>Customer Management</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Card Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_customers == null || !_customers.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-center">No customers found.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var customer in _customers)
+            {
+                <tr>
+                    <td>@customer.CustomerId</td>
+                    <td>@customer.CustomerName</td>
+                    <td>@customer.CustomerCardNumber</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => ShowUpdForm(customer.CustomerId)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteCustomer(customer.CustomerId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h3>@(flagAdd ? "Add New Customer" : "Edit Customer")</h3>
+
+<EditForm Model="@currentCustomer" OnValidSubmit="HandleFormSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="customerName" class="form-label">Full Name</label>
+        <InputText id="customerName" class="form-control" @bind-Value="currentCustomer.CustomerName" />
+    </div>
+    <div class="mb-3">
+        <label for="cardNumber" class="form-label">Card Number</label>
+        <InputNumber id="cardNumber" class="form-control" @bind-Value="currentCustomer.CustomerCardNumber" />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="ClearForm">Cancel</button>
+</EditForm>
+
+@code {
+    private List<CustomerGetDto> _customers = new();
+    private CustomerPostDto currentCustomer = new()
+        {
+            CustomerName = string.Empty,
+            CustomerCardNumber = -1
+        };
+    private bool flagAdd = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomers();
+    }
+
+    private async Task LoadCustomers()
+    {
+        try
+        {
+            _customers = (await Api.GetCustomersAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading customers: {ex.Message}");
+        }
+    }
+
+    private async Task AddNewCustomer()
+    {
+        try
+        {
+            var tmp = new CustomerPostDto
+                {
+                    CustomerName = currentCustomer.CustomerName,
+                    CustomerCardNumber = currentCustomer.CustomerCardNumber
+                };
+
+            var response = await Api.AddCustomerAsync(tmp);
+
+            if (response != null)
+            {
+                ClearForm();
+                await LoadCustomers();
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to add new customer.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error adding customer: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteCustomer(int customerId)
+    {
+        try
+        {
+            await Api.DeleteCustomerAsync(customerId);
+            await LoadCustomers();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error deleting customer: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateCustomer()
+    {
+        try
+        {
+            await Api.UpdateCustomerAsync(currentCustomer.CustomerId, new CustomerPostDto
+                {
+                    CustomerName = currentCustomer.CustomerName,
+                    CustomerCardNumber = currentCustomer.CustomerCardNumber
+                });
+
+            ClearForm();
+            await LoadCustomers();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating customer: {ex.Message}");
+        }
+    }
+
+    private async Task ShowUpdForm(int customerId)
+    {
+        flagAdd = false;
+
+        try
+        {
+            var response = await Api.GetCustomerAsync(customerId);
+
+            if (response != null)
+            {
+                currentCustomer = new CustomerPostDto
+                    {
+                        CustomerId = response.CustomerId,
+                        CustomerName = response.CustomerName,
+                        CustomerCardNumber = response.CustomerCardNumber
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading customer details: {ex.Message}");
+        }
+    }
+
+    private void ClearForm()
+    {
+        flagAdd = true;
+        currentCustomer = new CustomerPostDto
+            {
+                CustomerName = string.Empty,
+                CustomerCardNumber = -1
+            };
+    }
+
+    private async Task HandleFormSubmit()
+    {
+        if (flagAdd)
+        {
+            await AddNewCustomer();
+        }
+        else
+        {
+            await UpdateCustomer();
+        }
+    }
+}

@@ -1,0 +1,198 @@
+﻿@page "/products"
+@inject HttpClient Http
+@inject ServerApi Api
+
+<PageTitle>Products</PageTitle>
+
+<h1>Product Management</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Product Group</th>
+            <th>Weight</th>
+            <th>Price</th>
+            <th>Storage Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_products == null || !_products.Any())
+        {
+            <tr>
+                <td colspan="7" class="text-center">No products found.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var product in _products)
+            {
+                <tr>
+                    <td>@product.ProductId</td>
+                    <td>@product.ProductName</td>
+                    <td>@product.ProductGroup</td>
+                    <td>@product.ProductWeight</td>
+                    <td>@product.ProductPrice</td>
+                    <td>@product.DateStorage.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => ShowUpdateForm(product.ProductId)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteProduct(product.ProductId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h3>@(isAddMode ? "Add New Product" : "Edit Product")</h3>
+
+<EditForm Model="@currentProduct" OnValidSubmit="HandleFormSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="productName" class="form-label">Product Name</label>
+        <InputText id="productName" class="form-control" @bind-Value="currentProduct.ProductName" />
+    </div>
+    <div class="mb-3">
+        <label for="productGroup" class="form-label">Product Group</label>
+        <InputNumber id="productGroup" class="form-control" @bind-Value="currentProduct.ProductGroup" />
+    </div>
+    <div class="mb-3">
+        <label for="productWeight" class="form-label">Product Weight</label>
+        <InputNumber id="productWeight" class="form-control" @bind-Value="currentProduct.ProductWeight" />
+    </div>
+    <div class="mb-3">
+        <label for="productType" class="form-label">Product Type (Piece / Weighted)</label>
+        <InputCheckbox id="productType" class="form-control" @bind-Value="currentProduct.ProductType" />
+    </div>
+    <div class="mb-3">
+        <label for="productPrice" class="form-label">Product Price</label>
+        <InputNumber id="productPrice" class="form-control" @bind-Value="currentProduct.ProductPrice" />
+    </div>
+    <div class="mb-3">
+        <label for="dateStorage" class="form-label">Storage Date</label>
+        <InputDate id="dateStorage" class="form-control" @bind-Value="currentProduct.DateStorage" />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="ClearForm">Cancel</button>
+</EditForm>
+
+@code {
+    private List<ProductGetDto> _products = new();
+    private ProductPostDto currentProduct = new ProductPostDto();
+    private bool isAddMode = true;
+
+    private async Task LoadProducts()
+    {
+        try
+        {
+            _products = (await Api.GetProductsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading products: {ex.Message}");
+        }
+    }
+
+    private async Task AddNewProduct()
+    {
+        try
+        {
+            var response = await Api.PostProductAsync(currentProduct);
+            if (response != null)
+            {
+                ClearForm();
+                await LoadProducts();
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to add new product.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error adding product: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteProduct(int productId)
+    {
+        try
+        {
+            await Api.DeleteProductAsync(productId);
+            await LoadProducts();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error deleting product: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateProduct()
+    {
+        try
+        {
+            await Api.UpdateProductAsync(currentProduct);
+            ClearForm();
+            await LoadProducts();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating product: {ex.Message}");
+        }
+    }
+
+    private async Task ShowUpdateForm(int productId)
+    {
+        isAddMode = false;
+        try
+        {
+            var product = await Api.GetProductAsync(productId);
+            currentProduct = new ProductPostDto
+                {
+                    ProductGroup = product.ProductGroup,
+                    ProductName = product.ProductName,
+                    ProductWeight = product.ProductWeight,
+                    ProductType = product.ProductType,
+                    ProductPrice = product.ProductPrice,
+                    DateStorage = product.DateStorage
+                };
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading product details: {ex.Message}");
+        }
+    }
+
+    private void ClearForm()
+    {
+        isAddMode = true;
+        currentProduct = new ProductPostDto
+            {
+                ProductGroup = -1,
+                ProductName = string.Empty,
+                ProductWeight = 0.0,
+                ProductType = false,
+                ProductPrice = -1.0,
+                DateStorage = DateTime.Now
+            };
+    }
+
+    private async Task HandleFormSubmit()
+    {
+        if (isAddMode)
+        {
+            await AddNewProduct();
+        }
+        else
+        {
+            await UpdateProduct();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+}

@@ -25,12 +25,7 @@ public class CustomerController : ControllerBase
         _mapper = mapper;
     }
 
-    /// <summary>
-    /// GET all customers
-    /// </summary>
-    /// <returns>
-    /// JSON customers
-    /// </returns>
+
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<CustomerGetDto>> Get()

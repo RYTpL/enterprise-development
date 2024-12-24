@@ -1,0 +1,184 @@
+﻿@page "/sales"
+@inject HttpClient Http
+@inject ServerApi Api
+
+<PageTitle>Sales</PageTitle>
+
+<h1>Sale Management</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sale ID</th>
+            <th>Sale Date</th>
+            <th>Customer ID</th>
+            <th>Store ID</th>
+            <th>Amount</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_sales == null || !_sales.Any())
+        {
+            <tr>
+                <td colspan="6" class="text-center">No sales found.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var sale in _sales)
+            {
+                <tr>
+                    <td>@sale.SaleId</td>
+                    <td>@sale.DateSale.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@sale.CustomerId</td>
+                    <td>@sale.StoreId</td>
+                    <td>@sale.Sum</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => ShowUpdateForm(sale.SaleId)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteSale(sale.SaleId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h3>@(isAddMode ? "Add New Sale" : "Edit Sale")</h3>
+
+<EditForm Model="@currentSale" OnValidSubmit="HandleFormSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="dateSale" class="form-label">Sale Date</label>
+        <InputDate id="dateSale" class="form-control" @bind-Value="currentSale.DateSale" />
+    </div>
+    <div class="mb-3">
+        <label for="customerId" class="form-label">Customer ID</label>
+        <InputNumber id="customerId" class="form-control" @bind-Value="currentSale.CustomerId" />
+    </div>
+    <div class="mb-3">
+        <label for="storeId" class="form-label">Store ID</label>
+        <InputNumber id="storeId" class="form-control" @bind-Value="currentSale.StoreId" />
+    </div>
+    <div class="mb-3">
+        <label for="sum" class="form-label">Amount</label>
+        <InputNumber id="sum" class="form-control" @bind-Value="currentSale.Sum" />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="ClearForm">Cancel</button>
+</EditForm>
+
+@code {
+    private List<SaleGetDto> _sales = new();
+    private SalePostDto currentSale = new SalePostDto();
+    private bool isAddMode = true;
+
+    private async Task LoadSales()
+    {
+        try
+        {
+            _sales = (await Api.GetSalesAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading sales: {ex.Message}");
+        }
+    }
+
+    private async Task AddNewSale()
+    {
+        try
+        {
+            var response = await Api.PostSaleAsync(currentSale);
+            if (response != null)
+            {
+                ClearForm();
+                await LoadSales();
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to add new sale.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error adding sale: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteSale(int saleId)
+    {
+        try
+        {
+            await Api.DeleteSaleAsync(saleId);
+            await LoadSales();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error deleting sale: {ex.Message}");
+        }
+    }
+
+    private async Task UpdateSale()
+    {
+        try
+        {
+            await Api.UpdateSaleAsync(currentSale);
+            ClearForm();
+            await LoadSales();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating sale: {ex.Message}");
+        }
+    }
+
+    private async Task ShowUpdateForm(int saleId)
+    {
+        isAddMode = false;
+        try
+        {
+            var sale = await Api.GetSaleAsync(saleId);
+            currentSale = new SalePostDto
+                {
+                    DateSale = sale.DateSale,
+                    CustomerId = sale.CustomerId,
+                    StoreId = sale.StoreId,
+                    Sum = sale.Sum
+                };
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading sale details: {ex.Message}");
+        }
+    }
+
+    private void ClearForm()
+    {
+        isAddMode = true;
+        currentSale = new SalePostDto
+            {
+                DateSale = DateTime.Now,
+                CustomerId = -1,
+                StoreId = -1,
+                Sum = 0.0
+            };
+    }
+
+    private async Task HandleFormSubmit()
+    {
+        if (isAddMode)
+        {
+            await AddNewSale();
+        }
+        else
+        {
+            await UpdateSale();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSales();
+    }
+}
