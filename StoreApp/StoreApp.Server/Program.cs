@@ -5,6 +5,8 @@ using StoreApp.Server;
 using StoreApp.Server.Repository;
 using System.Reflection;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure AutoMapper
@@ -28,11 +30,13 @@ builder.Services.AddSwaggerGen(c =>
 // Database configuration
 builder.Services.AddDbContextFactory<StoreAppContext>(options =>
 {
-    options.UseMySQL(builder.Configuration.GetConnectionString(nameof(StoreApp)), mysqlOptions =>
+    var connectionString = builder.Configuration.GetConnectionString(nameof(StoreApp));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 34)), mysqlOptions =>
     {
-        mysqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
+        mysqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
     });
 });
+
 
 var app = builder.Build();
 

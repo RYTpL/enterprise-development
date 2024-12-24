@@ -4,9 +4,6 @@ using System.Reflection.Emit;
 
 namespace StoreApp.Model;
 
-/// <summary>
-/// Context for managing database entities
-/// </summary>
 public class StoreAppContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; } = null!;

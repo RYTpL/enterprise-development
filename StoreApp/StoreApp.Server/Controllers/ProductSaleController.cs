@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StoreApp.Model;
 using StoreApp.Server.Dto;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+
+
 
 namespace SaleApp.Server.Controllers;
 
