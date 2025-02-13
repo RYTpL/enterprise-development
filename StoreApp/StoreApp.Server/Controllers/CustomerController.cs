@@ -6,26 +6,12 @@ using StoreApp.Server.Dto;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 
-
-
 namespace StoreApp.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CustomerController : ControllerBase
+public class CustomerController(IDbContextFactory<StoreAppContext> _contextFactory, ILogger<CustomerController> _logger, IMapper _mapper) : ControllerBase
 {
-    private readonly IDbContextFactory<StoreAppContext> _contextFactory;
-    private readonly ILogger<CustomerController> _logger;
-    private readonly IMapper _mapper;
-
-    public CustomerController(IDbContextFactory<StoreAppContext> contextFactory, ILogger<CustomerController> logger, IMapper mapper)
-    {
-        _contextFactory = contextFactory;
-        _logger = logger;
-        _mapper = mapper;
-    }
-
-
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<CustomerGetDto>> Get()
@@ -36,15 +22,6 @@ public class CustomerController : ControllerBase
         return _mapper.Map<IEnumerable<CustomerGetDto>>(customers);
     }
 
-    /// <summary>
-    /// GET customer by ID
-    /// </summary>
-    /// <param name="customerId">
-    /// ID
-    /// </param>
-    /// <returns>
-    /// JSON customer
-    /// </returns>
     [HttpGet("{customerId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -57,23 +34,10 @@ public class CustomerController : ControllerBase
             _logger.LogInformation($"Not found customer with ID: {customerId}.");
             return NotFound();
         }
-        else
-        {
-            _logger.LogInformation($"GET customer with ID: {customerId}.");
-            return Ok(_mapper.Map<CustomerGetDto>(getCustomer));
-        }
-
+        _logger.LogInformation($"GET customer with ID: {customerId}.");
+        return Ok(_mapper.Map<CustomerGetDto>(getCustomer));
     }
 
-    /// <summary>
-    /// POST customer
-    /// </summary>
-    /// <param name="customerToPost">
-    /// Customer
-    /// </param>
-    /// <returns>
-    /// Code-200
-    /// </returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Post([FromBody] CustomerPostDto customerToPost)
@@ -85,18 +49,6 @@ public class CustomerController : ControllerBase
         return Ok();
     }
 
-    /// <summary>
-    /// PUT customer
-    /// </summary>
-    /// <param name="customerId">
-    /// ID
-    /// </param>
-    /// <param name="customerToPut">
-    /// Customer to put
-    /// </param>
-    /// <returns>
-    /// Code-200 or Code-404
-    /// </returns>
     [HttpPut("{customerId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -109,24 +61,12 @@ public class CustomerController : ControllerBase
             _logger.LogInformation($"Not found customer with ID: {customerId}");
             return NotFound();
         }
-        else
-        {
-            _logger.LogInformation($"PUT customer with ID: {customerId} ({customer.CustomerName}->{customerToPut.CustomerName}, {customer.CustomerCardNumber}->{customerToPut.CustomerCardNumber})");
-            _mapper.Map(customerToPut, customer);
-            await ctx.SaveChangesAsync();
-            return Ok();
-        }
+        _logger.LogInformation($"PUT customer with ID: {customerId} ({customer.CustomerName}->{customerToPut.CustomerName}, {customer.CustomerCardNumber}->{customerToPut.CustomerCardNumber})");
+        _mapper.Map(customerToPut, customer);
+        await ctx.SaveChangesAsync();
+        return Ok();
     }
 
-    /// <summary>
-    /// DELETE customer
-    /// </summary>
-    /// <param name="customerId">
-    /// ID
-    /// </param>
-    /// <returns>
-    /// Code-200 or Code-404
-    /// </returns>
     [HttpDelete("{customerId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -139,12 +79,9 @@ public class CustomerController : ControllerBase
             _logger.LogInformation($"Not found customer with ID: {customerId}");
             return NotFound();
         }
-        else
-        {
-            _logger.LogInformation($"DELETE customer with ID: {customerId}");
-            ctx.Customers.Remove(customer);
-            await ctx.SaveChangesAsync();
-            return Ok();
-        }
+        _logger.LogInformation($"DELETE customer with ID: {customerId}");
+        ctx.Customers.Remove(customer);
+        await ctx.SaveChangesAsync();
+        return Ok();
     }
 }

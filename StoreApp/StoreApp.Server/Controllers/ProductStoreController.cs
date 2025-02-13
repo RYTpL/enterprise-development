@@ -6,29 +6,12 @@ using StoreApp.Server.Dto;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 
-
-
 namespace StoreApp.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductStoreController : ControllerBase
+public class ProductStoreController(IDbContextFactory<StoreAppContext> _contextFactory, ILogger<ProductStoreController> _logger, IMapper _mapper) : ControllerBase
 {
-    private readonly IDbContextFactory<StoreAppContext> _contextFactory;
-    private readonly ILogger<ProductStoreController> _logger;
-    private readonly IMapper _mapper;
-
-    public ProductStoreController(IDbContextFactory<StoreAppContext> contextFactory, ILogger<ProductStoreController> logger, IMapper mapper)
-    {
-        _contextFactory = contextFactory;
-        _logger = logger;
-        _mapper = mapper;
-    }
-
-    /// <summary>
-    /// GET all ProductStore
-    /// </summary>
-    /// <returns></returns>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<ProductStoreGetDto>> Get()
@@ -39,103 +22,42 @@ public class ProductStoreController : ControllerBase
         return _mapper.Map<IEnumerable<ProductStoreGetDto>>(productStores);
     }
 
-    /// <summary>
-    /// GET by ID
-    /// </summary>
-    /// <param name="id">
-    /// ID
-    /// </param>
-    /// <returns>
-    /// JSON ProductStore
-    /// </returns>
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductStoreGetDto>> Get(int id)
     {
         using var ctx = await _contextFactory.CreateDbContextAsync();
-        var getProductStore = await ctx.ProductStores.FirstOrDefaultAsync(productStore => productStore.Id == id);
-        if (getProductStore == null)
+        var productStore = await ctx.ProductStores.FirstOrDefaultAsync(x => x.Id == id);
+        if (productStore == null)
         {
             _logger.LogInformation($"Not found productStore with ID: {id}.");
             return NotFound();
         }
-        else
-        {
-            _logger.LogInformation($"GET productStore with ID: {id}.");
-            return Ok(_mapper.Map<ProductStoreGetDto>(getProductStore));
-        }
-
+        _logger.LogInformation($"GET productStore with ID: {id}.");
+        return Ok(_mapper.Map<ProductStoreGetDto>(productStore));
     }
 
-
-    /// <summary>
-    /// GET product in all stores by ID product
-    /// </summary>
-    /// <param name="productId">
-    /// ID product
-    /// </param>
-    /// <returns>
-    /// JSON ProductStore
-    /// </returns>
-    [HttpGet("{productId}")]
+    [HttpGet("product/{productId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductStoreGetDto>> GetByProduct(int productId)
+    public async Task<IEnumerable<ProductStoreGetDto>> GetByProduct(int productId)
     {
         using var ctx = await _contextFactory.CreateDbContextAsync();
-        var getProductStore = await ctx.ProductStores.FirstOrDefaultAsync(productStore => productStore.ProductId == productId);
-        if (getProductStore == null)
-        {
-            _logger.LogInformation($"Not found productStore with ID: {productId}.");
-            return NotFound();
-        }
-        else
-        {
-            _logger.LogInformation($"GET productStore with ID: {productId}.");
-            return Ok(_mapper.Map<ProductStoreGetDto>(getProductStore));
-        }
-
+        var productStores = await ctx.ProductStores.Where(x => x.ProductId == productId).ToListAsync();
+        _logger.LogInformation(productStores.Any() ? $"GET productStores for product ID: {productId}." : $"Not found productStores for product ID: {productId}.");
+        return _mapper.Map<IEnumerable<ProductStoreGetDto>>(productStores);
     }
 
-    /// <summary>
-    /// GET all products in by ID store
-    /// </summary>
-    /// <param name="storeId">
-    /// ID store
-    /// </param>
-    /// <returns>
-    /// JSON ProductStore
-    /// </returns>
-    [HttpGet("{storeId}")]
+    [HttpGet("store/{storeId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductStoreGetDto>> GetByStore(int storeId)
+    public async Task<IEnumerable<ProductStoreGetDto>> GetByStore(int storeId)
     {
         using var ctx = await _contextFactory.CreateDbContextAsync();
-        var getProductStore = await ctx.ProductStores.FirstOrDefaultAsync(productStore => productStore.StoreId == storeId);
-        if (getProductStore == null)
-        {
-            _logger.LogInformation($"Not found productStore with ID: {storeId}.");
-            return NotFound();
-        }
-        else
-        {
-            _logger.LogInformation($"GET productStore with ID: {storeId}.");
-            return Ok(_mapper.Map<ProductStoreGetDto>(getProductStore));
-        }
-
+        var productStores = await ctx.ProductStores.Where(x => x.StoreId == storeId).ToListAsync();
+        _logger.LogInformation(productStores.Any() ? $"GET productStores for store ID: {storeId}." : $"Not found productStores for store ID: {storeId}.");
+        return _mapper.Map<IEnumerable<ProductStoreGetDto>>(productStores);
     }
 
-    /// <summary>
-    /// POST ProductStore
-    /// </summary>
-    /// <param name="productStoreToPost">
-    /// ProductStore
-    /// </param>
-    /// <returns>
-    /// Code-200
-    /// </returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Post([FromBody] ProductStorePostDto productStoreToPost)
@@ -147,66 +69,39 @@ public class ProductStoreController : ControllerBase
         return Ok();
     }
 
-    /// <summary>
-    /// PUT ProductStore
-    /// </summary>
-    /// <param name="id">
-    /// ID
-    /// </param>
-    /// <param name="productStoreToPut">
-    /// ProductStore
-    /// </param>
-    /// <returns>
-    /// Code-200 or Code-404
-    /// </returns>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Put(int id, [FromBody] ProductStorePostDto productStoreToPut)
     {
         using var ctx = await _contextFactory.CreateDbContextAsync();
-        var productStore = await ctx.ProductStores.FirstOrDefaultAsync(productStoreId => productStoreId.Id == id);
+        var productStore = await ctx.ProductStores.FirstOrDefaultAsync(x => x.Id == id);
         if (productStore == null)
         {
             _logger.LogInformation($"Not found productStore with ID: {id}");
             return NotFound();
         }
-        else
-        {
-            _logger.LogInformation($"PUT productStore with ID: {id} ({productStore.ProductId}->{productStoreToPut.ProductId}, {productStore.StoreId}->{productStoreToPut.StoreId}, {productStore.Quantity}->{productStoreToPut.Quantity})");
-            _mapper.Map(productStoreToPut, productStore);
-            await ctx.SaveChangesAsync();
-            return Ok();
-        }
+        _logger.LogInformation($"PUT productStore with ID: {id} ({productStore.ProductId}->{productStoreToPut.ProductId}, {productStore.StoreId}->{productStoreToPut.StoreId}, {productStore.Quantity}->{productStoreToPut.Quantity})");
+        _mapper.Map(productStoreToPut, productStore);
+        await ctx.SaveChangesAsync();
+        return Ok();
     }
 
-    /// <summary>
-    /// DELETE ProductStore
-    /// </summary>
-    /// <param name="id">
-    /// ID
-    /// </param>
-    /// <returns>
-    /// Code-200 or Code-404
-    /// </returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         using var ctx = await _contextFactory.CreateDbContextAsync();
-        var productStore = await ctx.ProductStores.FirstOrDefaultAsync(productStoreId => productStoreId.Id == id);
+        var productStore = await ctx.ProductStores.FirstOrDefaultAsync(x => x.Id == id);
         if (productStore == null)
         {
             _logger.LogInformation($"Not found productStore with ID: {id}");
             return NotFound();
         }
-        else
-        {
-            _logger.LogInformation($"DELETE productStore with ID: {id}");
-            ctx.ProductStores.Remove(productStore);
-            await ctx.SaveChangesAsync();
-            return Ok();
-        }
+        _logger.LogInformation($"DELETE productStore with ID: {id}");
+        ctx.ProductStores.Remove(productStore);
+        await ctx.SaveChangesAsync();
+        return Ok();
     }
 }

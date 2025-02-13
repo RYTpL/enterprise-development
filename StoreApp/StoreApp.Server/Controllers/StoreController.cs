@@ -6,24 +6,22 @@ using StoreApp.Server.Dto;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 
-
-
 namespace StoreApp.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class StoreController : ControllerBase
 {
-    private readonly IDbContextFactory<StoreAppContext> _contextFactory;
-    private readonly ILogger<StoreController> _logger;
-    private readonly IMapper _mapper;
+    // Праймари-конструктор позволяет прямо в сигнатуре конструктора объявить поля
+    public StoreController(
+        IDbContextFactory<StoreAppContext> contextFactory,
+        ILogger<StoreController> logger,
+        IMapper mapper) =>
+        (_contextFactory, _logger, _mapper) = (contextFactory, logger, mapper);
 
-    public StoreController(IDbContextFactory<StoreAppContext> contextFactory, ILogger<StoreController> logger, IMapper mapper)
-    {
-        _contextFactory = contextFactory;
-        _logger = logger;
-        _mapper = mapper;
-    }
+    private IDbContextFactory<StoreAppContext> _contextFactory { get; }
+    private ILogger<StoreController> _logger { get; }
+    private IMapper _mapper { get; }
 
     /// <summary>
     /// GET all stores
@@ -67,7 +65,6 @@ public class StoreController : ControllerBase
             _logger.LogInformation($"GET store with ID: {storeId}.");
             return Ok(_mapper.Map<StoreGetDto>(getStore));
         }
-
     }
 
     /// <summary>
@@ -86,7 +83,7 @@ public class StoreController : ControllerBase
         using var ctx = await _contextFactory.CreateDbContextAsync();
         await ctx.Stores.AddAsync(_mapper.Map<Store>(storeToPost));
         await ctx.SaveChangesAsync();
-        _logger.LogInformation($"POST store ({storeToPost.StoreName},  {storeToPost.StoreAddress})");
+        _logger.LogInformation($"POST store ({storeToPost.StoreName}, {storeToPost.StoreAddress})");
         return Ok();
     }
 
