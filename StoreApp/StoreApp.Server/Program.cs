@@ -1,58 +1,40 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using StoreApp.Model;
-using StoreApp.Server;
-using StoreApp.Server.Repository;
-using System.Reflection;
-
-
+﻿using Microsoft.EntityFrameworkCore;
+using StoreApp.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure AutoMapper
-builder.Services.AddSingleton<IMapper>(new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-}).CreateMapper());
+// Чтение строки подключения
+var connectionString = builder.Configuration.GetConnectionString("MySQL");
 
-// Register services
-builder.Services.AddScoped<IStoreAppRepository, StoreAppRepository>();
+// Регистрация DbContext с использованием MySQL-провайдера
+builder.Services.AddDbContext<StoreContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MySqlServerVersion(new Version(8, 0, 40))
+    ));
+
+
+// Добавляем CORS, контроллеры и Swagger
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
-// Swagger configuration
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
-});
-
-// Database configuration
-builder.Services.AddDbContextFactory<StoreAppContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString(nameof(StoreApp));
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 34)), mysqlOptions =>
-    {
-        mysqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-    });
-});
-
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Apply pending migrations
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<StoreAppContext>();
-    dbContext.Database.Migrate();
-}
-
-// Configure middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 app.MapControllers();

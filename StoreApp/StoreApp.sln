@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.test", "StoreApp.t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.Server", "StoreApp.Server\StoreApp.Server.csproj", "{6C521A25-6D9A-41AA-A15A-3FE47D5E591B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.WebApplication", "StoreApp.WebApplication\StoreApp.WebApplication.csproj", "{EB2E5128-D42F-413B-B626-2162FFE2A525}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.WebApplication", "StoreApp.WebApplication\StoreApp.WebApplication.csproj", "{41CC8BA7-B75E-3886-5AB6-CF4EFCC5CD72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,12 +29,15 @@ Global
 		{6C521A25-6D9A-41AA-A15A-3FE47D5E591B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C521A25-6D9A-41AA-A15A-3FE47D5E591B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C521A25-6D9A-41AA-A15A-3FE47D5E591B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB2E5128-D42F-413B-B626-2162FFE2A525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB2E5128-D42F-413B-B626-2162FFE2A525}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB2E5128-D42F-413B-B626-2162FFE2A525}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB2E5128-D42F-413B-B626-2162FFE2A525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41CC8BA7-B75E-3886-5AB6-CF4EFCC5CD72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41CC8BA7-B75E-3886-5AB6-CF4EFCC5CD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41CC8BA7-B75E-3886-5AB6-CF4EFCC5CD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41CC8BA7-B75E-3886-5AB6-CF4EFCC5CD72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F1B0C0CC-3C6F-40CB-BDA6-39952E5780F7}
 	EndGlobalSection
 EndGlobal
