@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.Model", "StoreApp.Model\StoreApp.Model.csproj", "{1C2E0856-8FCC-4CB1-A752-2A9A354985A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.test", "StoreApp.test\StoreApp.test.csproj", "{F4877BA8-1A25-450F-9EFC-4360AF506BC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.Test", "StoreApp.test\StoreApp.Test.csproj", "{F4877BA8-1A25-450F-9EFC-4360AF506BC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp.Server", "StoreApp.Server\StoreApp.Server.csproj", "{6C521A25-6D9A-41AA-A15A-3FE47D5E591B}"
 EndProject

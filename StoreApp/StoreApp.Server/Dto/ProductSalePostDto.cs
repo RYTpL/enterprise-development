@@ -1,18 +1,13 @@
 ﻿namespace StoreApp.Server.Dto;
 
-public class ProductSalePostDto
-{
-    /// <summary>
-    /// Product ID
-    /// </summary>
-    public int ProductId { get; set; } = -1;
-    /// <summary>
-    /// Sale ID
-    /// </summary>
-    public int SaleId { get; set; } = -1;
-
-    /// <summary>
-    /// Product quantity
-    /// </summary>
-    public int Quantity { get; set; } = 0;
-}
+/// <summary>
+/// DTO для создания записи о продаже продукта.
+/// </summary>
+/// <param name="ProductId">ID продукта.</param>
+/// <param name="SaleId">ID продажи.</param>
+/// <param name="Quantity">Количество продукта.</param>
+public record ProductSalePostDto(
+    int ProductId = -1,
+    int SaleId = -1,
+    int Quantity = 0
+);

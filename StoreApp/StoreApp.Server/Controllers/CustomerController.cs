@@ -1,87 +1,57 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StoreApp.Model;
+﻿using Microsoft.AspNetCore.Mvc;
 using StoreApp.Server.Dto;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-
-namespace StoreApp.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CustomerController(IDbContextFactory<StoreAppContext> _contextFactory, ILogger<CustomerController> _logger, IMapper _mapper) : ControllerBase
+public class CustomerController(ICustomerService customerService, ILogger<CustomerController> logger) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<CustomerGetDto>> Get()
     {
-        _logger.LogInformation("GET customers");
-        using var ctx = await _contextFactory.CreateDbContextAsync();
-        var customers = await ctx.Customers.ToArrayAsync();
-        return _mapper.Map<IEnumerable<CustomerGetDto>>(customers);
+        logger.LogInformation("GET customers");
+        return await customerService.GetAllCustomersAsync();
     }
 
     [HttpGet("{customerId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerGetDto>> Get(int customerId)
     {
-        using var ctx = await _contextFactory.CreateDbContextAsync();
-        var getCustomer = await ctx.Customers.FirstOrDefaultAsync(customer => customer.CustomerId == customerId);
-        if (getCustomer == null)
+        var customer = await customerService.GetCustomerByIdAsync(customerId);
+        if (customer is null)
         {
-            _logger.LogInformation($"Not found customer with ID: {customerId}.");
+            logger.LogInformation($"Not found customer with ID: {customerId}.");
             return NotFound();
         }
-        _logger.LogInformation($"GET customer with ID: {customerId}.");
-        return Ok(_mapper.Map<CustomerGetDto>(getCustomer));
+        return Ok(customer);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> Post([FromBody] CustomerPostDto customerToPost)
+    public async Task<ActionResult> Post([FromBody] CustomerPostDto customerDto)
     {
-        using var ctx = await _contextFactory.CreateDbContextAsync();
-        await ctx.Customers.AddAsync(_mapper.Map<Customer>(customerToPost));
-        await ctx.SaveChangesAsync();
-        _logger.LogInformation($"POST customer ({customerToPost.CustomerName}, {customerToPost.CustomerCardNumber})");
+        await customerService.AddCustomerAsync(customerDto);
         return Ok();
     }
 
     [HttpPut("{customerId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Put(int customerId, [FromBody] CustomerPostDto customerToPut)
+    public async Task<ActionResult> Put(int customerId, [FromBody] CustomerPostDto customerDto)
     {
-        using var ctx = await _contextFactory.CreateDbContextAsync();
-        var customer = await ctx.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
-        if (customer == null)
+        var updated = await customerService.UpdateCustomerAsync(customerId, customerDto);
+        if (!updated)
         {
-            _logger.LogInformation($"Not found customer with ID: {customerId}");
+            logger.LogInformation($"Not found customer with ID: {customerId}");
             return NotFound();
         }
-        _logger.LogInformation($"PUT customer with ID: {customerId} ({customer.CustomerName}->{customerToPut.CustomerName}, {customer.CustomerCardNumber}->{customerToPut.CustomerCardNumber})");
-        _mapper.Map(customerToPut, customer);
-        await ctx.SaveChangesAsync();
         return Ok();
     }
 
     [HttpDelete("{customerId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int customerId)
+    public async Task<ActionResult> Delete(int customerId)
     {
-        using var ctx = await _contextFactory.CreateDbContextAsync();
-        var customer = await ctx.Customers.FirstOrDefaultAsync(x => x.CustomerId == customerId);
-        if (customer == null)
+        var deleted = await customerService.DeleteCustomerAsync(customerId);
+        if (!deleted)
         {
-            _logger.LogInformation($"Not found customer with ID: {customerId}");
+            logger.LogInformation($"Not found customer with ID: {customerId}");
             return NotFound();
         }
-        _logger.LogInformation($"DELETE customer with ID: {customerId}");
-        ctx.Customers.Remove(customer);
-        await ctx.SaveChangesAsync();
         return Ok();
     }
 }

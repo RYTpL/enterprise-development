@@ -1,34 +1,23 @@
 ﻿namespace StoreApp.Server.Dto;
 
-public class ProductPostDto
+/// <summary>
+/// DTO для создания нового продукта.
+/// </summary>
+/// <param name="ProductGroup">Группа продукта.</param>
+/// <param name="ProductName">Название продукта.</param>
+/// <param name="ProductWeight">Вес продукта.</param>
+/// <param name="ProductType">Тип продукта (piece - true, weighted - false).</param>
+/// <param name="ProductPrice">Цена продукта.</param>
+/// <param name="DateStorage">Дата окончания срока хранения продукта.</param>
+public record ProductPostDto(
+    int ProductGroup = -1,
+    string ProductName = "",
+    double ProductWeight = 0.0,
+    bool ProductType = false,
+    double ProductPrice = -1.0,
+    DateTime DateStorage = default
+)
 {
-    /// <summary>
-    /// Product Group
-    /// </summary>
-    public int ProductGroup { get; set; } = -1;
-
-    /// <summary>
-    /// Product name
-    /// </summary>
-    public string ProductName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Product weight
-    /// </summary>
-    public double ProductWeight { get; set; } = 0.0;
-
-    /// <summary>
-    /// Product type (piece, weighted) piece -> true | weighted -> false
-    /// </summary>
-    public bool ProductType { get; set; } = false;
-
-    /// <summary>
-    /// Product price
-    /// </summary>
-    public double ProductPrice { get; set; } = -1.0;
-
-    /// <summary>
-    /// Product deadline date storage
-    /// </summary>
-    public DateTime DateStorage { get; set; } = new DateTime(1970, 1, 1);
+    // Если DateStorage не указан, присваиваем значение по умолчанию
+    public DateTime DateStorage { get; init; } = DateStorage == default ? new DateTime(1970, 1, 1) : DateStorage;
 }

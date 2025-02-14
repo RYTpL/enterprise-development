@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace StoreApp.Model;
 
-/// <summary>
-/// The class describing the sale
-/// </summary>
 public class Sale
 {
     /// <summary>
@@ -16,28 +14,24 @@ public class Sale
     /// <summary>
     /// Date and time of sale
     /// </summary>
-    [Required]
-    public DateTime DateSale { get; set; } = new DateTime(1970, 1, 1);
+    public required DateTime DateSale { get; set; } = new DateTime(1970, 1, 1);
 
     /// <summary>
     /// Customer
     /// </summary>
     [ForeignKey("Customer")]
-    [Required]
-    public int CustomerId { get; set; } = -1;
+    public required int CustomerId { get; set; } = -1;
 
     /// <summary>
     /// Store
     /// </summary>
     [ForeignKey("Store")]
-    [Required]
-    public int StoreId { get; set; } = -1;
+    public required int StoreId { get; set; } = -1;
 
     /// <summary>
     /// Purchase amount
     /// </summary>
-    [Required]
-    public double Sum { get; set; } = 0.0;
+    public required double Sum { get; set; } = 0.0;
 
     /// <summary>
     /// Collection of ProductSales
@@ -55,15 +49,19 @@ public class Sale
         Sum = sum;
     }
 
-    public Sale(int saleId, string dateSale, int customerId, int storeId, List<int> productIds, double sum)
+    public Sale(int saleId, string dateSale, int customerId, int storeId, List<int> productIds, List<int> quantities, double sum)
     {
         SaleId = saleId;
         DateSale = DateTime.Parse(dateSale);
         CustomerId = customerId;
         StoreId = storeId;
-        ProductSales = productIds.Select(productId => new ProductSale { ProductId = productId, SaleId = saleId }).ToList();
+        ProductSales = productIds.Select((productId, index) => new ProductSale
+        {
+            ProductId = productId,
+            SaleId = saleId,
+            Quantity = quantities[index]  // Устанавливаем значение для Quantity
+        }).ToList();
         Sum = sum;
     }
+
 }
-
-

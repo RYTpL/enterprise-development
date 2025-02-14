@@ -1,14 +1,11 @@
 ﻿namespace StoreApp.Server.Dto;
 
-public class StorePostDto
-{
-    /// <summary>
-    /// Store name
-    /// </summary>
-    public string StoreName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Store address
-    /// </summary>
-    public string StoreAddress { get; set; } = string.Empty;
-}
+/// <summary>
+/// DTO для создания нового магазина.
+/// </summary>
+/// <param name="StoreName">Название магазина.</param>
+/// <param name="StoreAddress">Адрес магазина.</param>
+public record StorePostDto(
+    string StoreName = "",
+    string StoreAddress = ""
+);

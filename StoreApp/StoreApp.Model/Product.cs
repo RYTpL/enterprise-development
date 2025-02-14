@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+
 namespace StoreApp.Model;
 
-/// <summary>
-/// Product - Class describing the product
-/// </summary>
 public class Product
 {
     /// <summary>
@@ -16,48 +14,42 @@ public class Product
     /// <summary>
     /// Product Group
     /// </summary>
-    [Required]
-    public int ProductGroup { get; set; } = -1;
+    public required int ProductGroup { get; set; } = -1;
 
     /// <summary>
     /// Product name
     /// </summary>
-    [Required]
-    public string ProductName { get; set; } = string.Empty;
+    public required string ProductName { get; set; } = string.Empty;
 
     /// <summary>
     /// Product weight
     /// </summary>
-    [Required]
-    public double ProductWeight { get; set; } = 0.0;
+    public required double ProductWeight { get; set; } = 0.0;
 
     /// <summary>
     /// Product type (piece, weighted) piece -> true | weighted -> false
     /// </summary>
-    [Required]
-    public bool ProductType { get; set; } = false;
+    public required bool ProductType { get; set; } = false;
 
     /// <summary>
     /// Product price
     /// </summary>
-    [Required]
-    public double ProductPrice { get; set; } = -1.0;
+    public required double ProductPrice { get; set; } = -1.0;
 
     /// <summary>
     /// Product deadline date storage
     /// </summary>
-    [Required]
-    public DateTime DateStorage { get; set; } = new DateTime(1970, 1, 1);
+    public required DateTime DateStorage { get; set; } = new DateTime(1970, 1, 1);
 
     /// <summary>
     /// Collection ProductSale
     /// </summary>
-    public List<ProductSale> ProductSales { get; set; } = null!;
+    public List<ProductSale> ProductSales { get; set; } = new List<ProductSale>();
 
     /// <summary>
     /// Collection ProductStore
     /// </summary>
-    public List<ProductStore> ProductStores { get; set; } = null!;
+    public List<ProductStore> ProductStores { get; set; } = new List<ProductStore>();
 
     public Product() { }
 
@@ -73,7 +65,4 @@ public class Product
         ProductSales = new List<ProductSale>();
         ProductStores = new List<ProductStore>();
     }
-
-
 }
-

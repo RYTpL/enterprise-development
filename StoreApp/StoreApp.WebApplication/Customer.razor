@@ -1,7 +1,5 @@
-﻿@page "/customers"
-@using StoreApp.Server.Dto
+﻿@using StoreApp.Server.Dto
 @inject HttpClient Http
-@inject ServerApi Api
 
 <PageTitle>Customer Management</PageTitle>
 
@@ -60,10 +58,10 @@
 @code {
     private List<CustomerGetDto> _customers = new();
     private CustomerPostDto currentCustomer = new()
-        {
-            CustomerName = string.Empty,
-            CustomerCardNumber = -1
-        };
+    {
+        CustomerName = string.Empty,
+        CustomerCardNumber = -1
+    };
     private bool flagAdd = true;
 
     protected override async Task OnInitializedAsync()
@@ -75,7 +73,7 @@
     {
         try
         {
-            _customers = (await Api.GetCustomersAsync()).ToList();
+            _customers = await Http.GetFromJsonAsync<List<CustomerGetDto>>("api/customers");
         }
         catch (Exception ex)
         {
@@ -87,15 +85,9 @@
     {
         try
         {
-            var tmp = new CustomerPostDto
-                {
-                    CustomerName = currentCustomer.CustomerName,
-                    CustomerCardNumber = currentCustomer.CustomerCardNumber
-                };
+            var response = await Http.PostAsJsonAsync("api/customers", currentCustomer);
 
-            var response = await Api.AddCustomerAsync(tmp);
-
-            if (response != null)
+            if (response.IsSuccessStatusCode)
             {
                 ClearForm();
                 await LoadCustomers();
@@ -115,8 +107,15 @@
     {
         try
         {
-            await Api.DeleteCustomerAsync(customerId);
-            await LoadCustomers();
+            var response = await Http.DeleteAsync($"api/customers/{customerId}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadCustomers();
+            }
+            else
+            {
+                Console.Error.WriteLine($"Failed to delete customer with ID {customerId}");
+            }
         }
         catch (Exception ex)
         {
@@ -128,14 +127,17 @@
     {
         try
         {
-            await Api.UpdateCustomerAsync(currentCustomer.CustomerId, new CustomerPostDto
-                {
-                    CustomerName = currentCustomer.CustomerName,
-                    CustomerCardNumber = currentCustomer.CustomerCardNumber
-                });
+            var response = await Http.PutAsJsonAsync($"api/customers/{currentCustomer.CustomerId}", currentCustomer);
 
-            ClearForm();
-            await LoadCustomers();
+            if (response.IsSuccessStatusCode)
+            {
+                ClearForm();
+                await LoadCustomers();
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to update customer.");
+            }
         }
         catch (Exception ex)
         {
@@ -149,16 +151,16 @@
 
         try
         {
-            var response = await Api.GetCustomerAsync(customerId);
+            var customer = await Http.GetFromJsonAsync<CustomerPostDto>($"api/customers/{customerId}");
 
-            if (response != null)
+            if (customer != null)
             {
                 currentCustomer = new CustomerPostDto
-                    {
-                        CustomerId = response.CustomerId,
-                        CustomerName = response.CustomerName,
-                        CustomerCardNumber = response.CustomerCardNumber
-                    };
+                {
+                    CustomerId = customer.CustomerId,
+                    CustomerName = customer.CustomerName,
+                    CustomerCardNumber = customer.CustomerCardNumber
+                };
             }
         }
         catch (Exception ex)
@@ -171,10 +173,10 @@
     {
         flagAdd = true;
         currentCustomer = new CustomerPostDto
-            {
-                CustomerName = string.Empty,
-                CustomerCardNumber = -1
-            };
+        {
+            CustomerName = string.Empty,
+            CustomerCardNumber = -1
+        };
     }
 
     private async Task HandleFormSubmit()

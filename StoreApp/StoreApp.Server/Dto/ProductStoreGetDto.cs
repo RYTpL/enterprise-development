@@ -1,23 +1,15 @@
 ﻿namespace StoreApp.Server.Dto;
 
-public class ProductStoreGetDto
-{
-    /// <summary>
-    /// CustomerId
-    /// </summary>
-    public int Id { get; set; } = -1;
-    /// <summary>
-    /// Product ID
-    /// </summary>
-    public int ProductId { get; set; } = -1;
-
-    /// <summary>
-    /// Store ID
-    /// </summary>
-    public int StoreId { get; set; } = -1;
-
-    /// <summary>
-    /// Product quantity
-    /// </summary>
-    public int Quantity { get; set; } = 0;
-}
+/// <summary>
+/// DTO для получения информации о продукте в магазине.
+/// </summary>
+/// <param name="Id">ID клиента.</param>
+/// <param name="ProductId">ID продукта.</param>
+/// <param name="StoreId">ID магазина.</param>
+/// <param name="Quantity">Количество продукта.</param>
+public record ProductStoreGetDto(
+    int Id = -1,
+    int ProductId = -1,
+    int StoreId = -1,
+    int Quantity = 0
+);

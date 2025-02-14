@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace StoreApp.Model;
 
-/// <summary>
-/// Relationship between a product, a sale, and the quantity of that product
-/// </summary>
 public class ProductSale
 {
     /// <summary>
@@ -17,21 +15,18 @@ public class ProductSale
     /// Product ID
     /// </summary>
     [ForeignKey("Product")]
-    [Required]
-    public int ProductId { get; set; } = -1;
+    public required int ProductId { get; set; } = -1;
 
     /// <summary>
     /// Sale ID
     /// </summary>
     [ForeignKey("Sale")]
-    [Required]
-    public int SaleId { get; set; } = -1;
+    public required int SaleId { get; set; } = -1;
 
     /// <summary>
     /// Product quantity
     /// </summary>
-    [Required]
-    public int Quantity { get; set; } = 0;
+    public required int Quantity { get; set; } = 0;
 
     public ProductSale() { }
 
@@ -43,4 +38,3 @@ public class ProductSale
         Quantity = quantity;
     }
 }
-

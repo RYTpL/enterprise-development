@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
+using System.Globalization;
 
 namespace StoreApp.Model;
 
@@ -20,6 +19,11 @@ public class StoreAppContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        SeedData(modelBuilder);
+    }
+
+    private void SeedData(ModelBuilder modelBuilder)
+    {
         SeedCustomers(modelBuilder);
         SeedProducts(modelBuilder);
         SeedProductSales(modelBuilder);
@@ -31,85 +35,142 @@ public class StoreAppContext : DbContext
     private void SeedCustomers(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>().HasData(
-            new Customer(1, "Michelle Padilla", 111111),
-            new Customer(2, "Manuel Gomez", 222222),
-            new Customer(3, "Raymond Oliver", 333333),
-            new Customer(4, "Enrique Morgan", 444444),
-            new Customer(5, "Walter Mullins", 555555)
+            new Customer { CustomerId = 1, CustomerName = "John Doe", CustomerCardNumber = 111111 },
+            new Customer { CustomerId = 2, CustomerName = "Jane Smith", CustomerCardNumber = 222222 },
+            new Customer { CustomerId = 3, CustomerName = "Michael Johnson", CustomerCardNumber = 333333 },
+            new Customer { CustomerId = 4, CustomerName = "Emily Brown", CustomerCardNumber = 444444 },
+            new Customer { CustomerId = 5, CustomerName = "David Wilson", CustomerCardNumber = 555555 }
         );
     }
+
 
     private void SeedProducts(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Product>().HasData(
-            new Product(1, 1, "Milk", 0.940, false, 89.0, "23.02.2023"),
-            new Product(2, 1, "Butter", 0.940, false, 159.0, "21.05.2023"),
-            new Product(3, 2, "Pasta", 0.400, true, 109.0, "10.01.2023"),
-            new Product(4, 3, "Eggs", 0.600, false, 96.0, "09.05.2023"),
-            new Product(5, 3, "Bread", 0.440, false, 36.0, "23.02.2023")
+            new Product { ProductId = 1, ProductGroup = 1, ProductName = "Milk", ProductWeight = 0.950, ProductType = false, ProductPrice = 2.50, DateStorage = DateTime.ParseExact("23.02.2025", "dd.MM.yyyy", CultureInfo.InvariantCulture) },
+            new Product { ProductId = 2, ProductGroup = 1, ProductName = "Cheese", ProductWeight = 0.500, ProductType = false, ProductPrice = 5.00, DateStorage = DateTime.ParseExact("23.02.2025", "dd.MM.yyyy", CultureInfo.InvariantCulture) },
+            new Product { ProductId = 3, ProductGroup = 2, ProductName = "Pasta", ProductWeight = 0.450, ProductType = true, ProductPrice = 1.20, DateStorage = DateTime.ParseExact("23.02.2025", "dd.MM.yyyy", CultureInfo.InvariantCulture) },
+            new Product { ProductId = 4, ProductGroup = 3, ProductName = "Eggs", ProductWeight = 0.600, ProductType = true, ProductPrice = 3.00, DateStorage = DateTime.ParseExact("23.02.2025", "dd.MM.yyyy", CultureInfo.InvariantCulture) },
+            new Product { ProductId = 5, ProductGroup = 3, ProductName = "Bread", ProductWeight = 0.480, ProductType = false, ProductPrice = 1.50, DateStorage = DateTime.ParseExact("23.02.2025", "dd.MM.yyyy", CultureInfo.InvariantCulture) }
         );
     }
 
     private void SeedProductSales(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ProductSale>().HasData(
-            new ProductSale(1, 1, 1, 1),
-            new ProductSale(2, 2, 1, 1),
-            new ProductSale(3, 3, 1, 1),
-            new ProductSale(4, 4, 2, 1),
-            new ProductSale(5, 5, 2, 1),
-            new ProductSale(6, 1, 2, 1),
-            new ProductSale(7, 2, 3, 1),
-            new ProductSale(8, 3, 3, 1),
-            new ProductSale(9, 4, 3, 1),
-            new ProductSale(10, 5, 4, 1),
-            new ProductSale(11, 1, 4, 1),
-            new ProductSale(12, 2, 4, 1),
-            new ProductSale(13, 3, 5, 1),
-            new ProductSale(14, 4, 5, 1),
-            new ProductSale(15, 5, 5, 1),
-            new ProductSale(16, 2, 6, 1),
-            new ProductSale(17, 3, 6, 1),
-            new ProductSale(18, 4, 6, 1),
-            new ProductSale(19, 5, 7, 1),
-            new ProductSale(20, 1, 7, 1),
-        new ProductSale(21, 4, 7, 1)
+            new ProductSale { Id = 1, ProductId = 1, SaleId = 1, Quantity = 2 },
+            new ProductSale { Id = 2, ProductId = 2, SaleId = 1, Quantity = 1 },
+            new ProductSale { Id = 3, ProductId = 3, SaleId = 2, Quantity = 3 },
+            new ProductSale { Id = 4, ProductId = 4, SaleId = 2, Quantity = 1 },
+            new ProductSale { Id = 5, ProductId = 5, SaleId = 3, Quantity = 2 },
+            new ProductSale { Id = 6, ProductId = 1, SaleId = 3, Quantity = 1 },
+            new ProductSale { Id = 7, ProductId = 2, SaleId = 4, Quantity = 2 },
+            new ProductSale { Id = 8, ProductId = 3, SaleId = 4, Quantity = 1 },
+            new ProductSale { Id = 9, ProductId = 4, SaleId = 5, Quantity = 3 },
+            new ProductSale { Id = 10, ProductId = 5, SaleId = 5, Quantity = 2 }
         );
     }
+
 
     private void SeedProductStores(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ProductStore>().HasData(
-            new ProductStore(1, 1, 2, 10),
-            new ProductStore(2, 2, 2, 2),
-            new ProductStore(3, 3, 2, 5),
-            new ProductStore(4, 3, 3, 15),
-            new ProductStore(5, 4, 2, 0),
-            new ProductStore(6, 4, 3, 20)
+            new ProductStore { Id = 1, ProductId = 1, StoreId = 1, Quantity = 50 },
+            new ProductStore { Id = 2, ProductId = 2, StoreId = 1, Quantity = 30 },
+            new ProductStore { Id = 3, ProductId = 3, StoreId = 2, Quantity = 100 },
+            new ProductStore { Id = 4, ProductId = 4, StoreId = 2, Quantity = 60 },
+            new ProductStore { Id = 5, ProductId = 5, StoreId = 3, Quantity = 80 },
+            new ProductStore { Id = 6, ProductId = 1, StoreId = 4, Quantity = 40 }
         );
     }
+
 
     private void SeedSales(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Sale>().HasData(
-            new Sale(1, "03.03.2023", 2, 1, 357.0),
-            new Sale(2, "03.01.2023", 1, 2, 221.0),
-            new Sale(3, "15.02.2023", 2, 1, 364.0),
-            new Sale(4, "18.02.2023", 3, 3, 284.0),
-            new Sale(5, "16.02.2023", 4, 4, 241.0),
-            new Sale(6, "28.02.2023", 5, 2, 364.0),
-            new Sale(7, "01.03.2023", 5, 1, 284.0)
+            new Sale
+            {
+                SaleId = 1,
+                DateSale = DateTime.ParseExact("23.02.2025", "dd.MM.yyyy", CultureInfo.InvariantCulture),
+                CustomerId = 1,
+                StoreId = 1,
+                Sum = 15.00,
+                ProductSales = new List<ProductSale>
+    {
+        new ProductSale { ProductId = 1, SaleId = 1, Quantity = 2 },
+        new ProductSale { ProductId = 2, SaleId = 1, Quantity = 3 }
+    }
+            },
+
+            new Sale
+            {
+                SaleId = 2,
+                DateSale = DateTime.ParseExact("2024-01-16", "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                CustomerId = 2,
+                StoreId = 2,
+                Sum = 25.00,
+                ProductSales = new List<ProductSale>
+    {
+        new ProductSale { ProductId = 3, SaleId = 2, Quantity = 1 },
+        new ProductSale { ProductId = 4, SaleId = 2, Quantity = 2 }
+    }
+            },
+
+            new Sale
+            {
+                SaleId = 3,
+                DateSale = DateTime.ParseExact("2024-01-17", "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                CustomerId = 3,
+                StoreId = 3,
+                Sum = 10.00,
+                ProductSales = new List<ProductSale>
+                {
+                    new ProductSale { ProductId = 5, SaleId = 3, Quantity = 5 }
+                }
+            },
+
+            new Sale
+            {
+                SaleId = 4,
+                DateSale = DateTime.ParseExact("2024-01-18", "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                CustomerId = 4,
+                StoreId = 4,
+                Sum = 18.00,
+                ProductSales = new List<ProductSale>
+                {
+                    new ProductSale { ProductId = 1, SaleId = 4, Quantity = 3 },
+                    new ProductSale { ProductId = 4, SaleId = 4, Quantity = 1 }
+                }
+            },
+
+            new Sale
+            {
+                SaleId = 5,
+                DateSale = DateTime.ParseExact("2024-01-19", "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                CustomerId = 5,
+                StoreId = 5,
+                Sum = 12.00,
+                ProductSales = new List<ProductSale>
+                {
+                    new ProductSale { ProductId = 2, SaleId = 5, Quantity = 2 },
+                    new ProductSale { ProductId = 5, SaleId = 5, Quantity = 2 }
+                }
+            }
+
         );
     }
+
+
+
 
     private void SeedStores(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Store>().HasData(
-            new Store(1, "Walmart", "Polevaya 123"),
-            new Store(2, "Pyaterochka", "Pushkina 1837"),
-            new Store(3, "Shestorochka", "Kolotushkina 0"),
-            new Store(4, "Magnit", "Moskovskoye shosse 666"),
-            new Store(5, "Perekrestok", "Revolyutsionnaya 1917")
+            new Store { StoreId = 1, StoreName = "Store 1", StoreAddress = "Address 1" },
+            new Store { StoreId = 2, StoreName = "Store 2", StoreAddress = "Address 2" },
+            new Store { StoreId = 3, StoreName = "Store 3", StoreAddress = "Address 3" },
+            new Store { StoreId = 4, StoreName = "Store 4", StoreAddress = "Address 4" },
+            new Store { StoreId = 5, StoreName = "Store 5", StoreAddress = "Address 5" }
         );
     }
 }

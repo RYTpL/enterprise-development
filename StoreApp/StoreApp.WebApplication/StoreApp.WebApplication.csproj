@@ -1,49 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-	
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="API\swagger.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Remove="API\swagger.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <OpenApiReference Include="API\swagger.json" CodeGenerator="NSwagCSharp" ClassName="ServerApi" />
-  </ItemGroup>
+	<ItemGroup>
+		<OpenApiReference Include="API\swagger.json" CodeGenerator="NSwagCSharp" ClassName="ServerApi" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-	  <PackageReference Include="MudBlazor" Version="7.14.0" />
-	  <PackageReference Include="MudBlazor.FontIcons.MaterialSymbols" Version="1.2.0" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	  <PackageReference Include="Blazorise" Version="1.7.0" />
-	  <PackageReference Include="Blazorise.Bootstrap" Version="1.7.0" />
-	  <PackageReference Include="Blazorise.Bootstrap5" Version="1.7.0" />
-	  <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.0" />
-	  <PackageReference Include="Blazorise.Icons.Material" Version="1.7.0" />
-	  <PackageReference Include="Blazorise.Material" Version="1.7.0" />
-	  <ProjectReference Include="..\StoreApp.Server\StoreApp.Server.csproj" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="NSwag.ApiDescription.Client" Version="13.18.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<!-- MudBlazor -->
+		<PackageReference Include="MudBlazor" Version="7.14.0" />
+		<PackageReference Include="MudBlazor.FontIcons.MaterialSymbols" Version="1.2.0" />
+	</ItemGroup>
 
-  </ItemGroup>
-
+	<ItemGroup>
+	  <Folder Include="Pages\" />
+	</ItemGroup>
 
 </Project>

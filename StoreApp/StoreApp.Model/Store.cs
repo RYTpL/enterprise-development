@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace StoreApp.Model;
 
 /// <summary>
@@ -6,33 +7,14 @@ namespace StoreApp.Model;
 /// </summary>
 public class Store
 {
-    /// <summary>
-    /// Store ID
-    /// </summary>
     [Key]
-    public int StoreId { get; set; }
+    public required int StoreId { get; set; }
 
-    /// <summary>
-    /// Store name
-    /// </summary>
-    [Required]
-    public string StoreName { get; set; } = string.Empty;
+    public required string StoreName { get; set; }
+    public required string StoreAddress { get; set; }
 
-    /// <summary>
-    /// Store address
-    /// </summary>
-    [Required]
-    public string StoreAddress { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Store sales collection
-    /// </summary>
-    public List<Sale> Sales { get; set; } = null!;
-
-    /// <summary>
-    /// Collection ProductStore
-    /// </summary>
-    public List<ProductStore> ProductStores { get; set; } = null!;
+    public List<Sale> Sales { get; set; } = new List<Sale>();
+    public List<ProductStore> ProductStores { get; set; } = new List<ProductStore>();
 
     public Store() { }
 

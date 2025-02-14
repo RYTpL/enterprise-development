@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace StoreApp.Model;
 
-/// <summary>
-/// Customer - Class describing the buyer
-/// </summary>
 public class Customer
 {
     /// <summary>
@@ -15,28 +13,26 @@ public class Customer
     /// <summary>
     /// Full name of customer
     /// </summary>
-    [Required]
-    public string CustomerName { get; set; } = string.Empty;
+    public required string CustomerName { get; set; }
 
     /// <summary>
     /// Customer card number
     /// </summary>
-    [Required]
-    public int CustomerCardNumber { get; set; } = -1;
+    public required int CustomerCardNumber { get; set; }
 
     /// <summary>
     /// Customer sales collection
     /// </summary>
-    public List<Sale> Sales { get; set; } = null!;
+    public List<Sale> Sales { get; set; } = new List<Sale>();
 
     public Customer() { }
 
     public Customer(int customerId, string customerName, int customerCardNumber)
     {
         CustomerId = customerId;
-        CustomerName = customerName;
+        CustomerName = customerName;  // Это обязательное свойство, теперь оно передается в конструктор
         CustomerCardNumber = customerCardNumber;
         Sales = new List<Sale>();
     }
-}
 
+}

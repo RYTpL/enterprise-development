@@ -12,16 +12,16 @@ namespace StoreApp.Server.Controllers;
 [ApiController]
 public class StoreController : ControllerBase
 {
-    // Праймари-конструктор позволяет прямо в сигнатуре конструктора объявить поля
+    private IDbContextFactory<StoreAppContext> _contextFactory { get; }
+    private ILogger<StoreController> _logger { get; }
+    private IMapper _mapper { get; }
+
+    // Праймари-конструктор
     public StoreController(
         IDbContextFactory<StoreAppContext> contextFactory,
         ILogger<StoreController> logger,
         IMapper mapper) =>
         (_contextFactory, _logger, _mapper) = (contextFactory, logger, mapper);
-
-    private IDbContextFactory<StoreAppContext> _contextFactory { get; }
-    private ILogger<StoreController> _logger { get; }
-    private IMapper _mapper { get; }
 
     /// <summary>
     /// GET all stores

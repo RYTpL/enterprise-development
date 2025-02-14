@@ -1,24 +1,19 @@
 ﻿namespace StoreApp.Server.Dto;
 
-public class SalePostDto
+/// <summary>
+/// DTO для создания новой продажи.
+/// </summary>
+/// <param name="DateSale">Дата и время продажи.</param>
+/// <param name="CustomerId">ID клиента.</param>
+/// <param name="StoreId">ID магазина.</param>
+/// <param name="Sum">Сумма покупки.</param>
+public record SalePostDto(
+    DateTime DateSale = default,
+    int CustomerId = -1,
+    int StoreId = -1,
+    double Sum = 0.0
+)
 {
-    /// <summary>
-    /// Date and time of sale
-    /// </summary>
-    public DateTime DateSale { get; set; } = new DateTime(1970, 1, 1);
-
-    /// <summary>
-    /// Customer
-    /// </summary>
-    public int CustomerId { get; set; } = -1;
-
-    /// <summary>
-    /// Store
-    /// </summary>
-    public int StoreId { get; set; } = -1;
-
-    /// <summary>
-    /// Purchase amount
-    /// </summary>
-    public double Sum { get; set; } = 0.0;
+    // Устанавливаем значение по умолчанию для DateSale
+    public DateTime DateSale { get; init; } = DateSale == default ? new DateTime(1970, 1, 1) : DateSale;
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreApp.Server.Data;
+using StoreApp.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<AnalyticsService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+
 
 var app = builder.Build();
 

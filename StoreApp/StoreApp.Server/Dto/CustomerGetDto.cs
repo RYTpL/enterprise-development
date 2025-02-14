@@ -1,18 +1,9 @@
 ﻿namespace StoreApp.Server.Dto;
 
-public class CustomerGetDto
-{
-    /// <summary>
-    /// ID of customer
-    /// </summary>
-    public int CustomerId { get; set; }
-    /// <summary>
-    /// Full name of customer
-    /// </summary>
-    public string CustomerName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Customer card number
-    /// </summary>
-    public int CustomerCardNumber { get; set; }
-}
+/// <summary>
+/// DTO для получения информации о клиенте.
+/// </summary>
+/// <param name="CustomerId">ID клиента.</param>
+/// <param name="CustomerName">Полное имя клиента.</param>
+/// <param name="CustomerCardNumber">Номер карты клиента.</param>
+public record CustomerGetDto(int CustomerId, string CustomerName, int CustomerCardNumber);
